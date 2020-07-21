@@ -1,46 +1,72 @@
-import movies
+import logging
+import json
+import spells_classes_ded
+
+logger = logging.getLogger('Actions')
 
 
 def action_handler(action, parameters, return_var):
     return_values = {}
-    if action == 'trendings':
-        return_values = get_trendings(parameters, return_var)
-    elif action == 'search':
-        return_values = search_movies(parameters, return_var)
+
+    if action == "listagem_spells_por_classe":
+        return_values = get_listagem_spells_por_classe(parameters, return_var)
+    elif action == "spell_especifico":
+        return_values = get_spell_especifico(parameters, return_var)
+    elif action == "listagem_spells":
+        return_values = get_listagem_spells(return_var)
+    elif action == "listagem_classes":
+        return_values = get_listagem_classe(return_var)
+
+    logger.info('return_values' + json.dumps(return_values))
+
     return {
-            'skills': {
-                'main skill': {
-                    'user_defined': return_values
-                }
+        'skills': {
+            'main skill': {
+                'user_defined': return_values
             }
         }
-
-def get_trendings(parameters, return_var):
-    is_day = (parameters['periodo'] == 'dia')
-    movie_titles = movies.get_trendings(is_day)
-
-    # trato os nomes aqui para facilitar, tratar no assistant eh mais complexo
-    # pois nao tenho o mesmo poder de programacao
-    movie_string = '\n\n'
-    for movie in movie_titles:
-        movie_string += movie + ',\n'
-    movie_string = movie_string[:-2]
-    return {
-        return_var: movie_string
-    }
-
-def search_movies(parameters, return_var):
-    query = parameters['termo']
-    movie_titles = movies.search_movies(query)
-
-    # trato os nomes aqui para facilitar, tratar no assistant eh mais complexo
-    # pois nao tenho o mesmo poder de programacao
-    movie_string = '\n\n'
-    for movie in movie_titles:
-        movie_string += movie + ',\n'
-    movie_string = movie_string[:-2]
-    return {
-        return_var: movie_string
     }
 
 
+def get_listagem_spells(return_var):
+    logger.info("get_listagem_spells")
+
+    result = spells_classes_ded.lista_spell()
+
+    logger.info("get_listagem_spells - retorno - " + result)
+
+    return __construir_retorno(return_var, result)
+
+
+def get_spell_especifico(parameters, return_var):
+    logger.info("get_spell_especifico - Parametros - " + json.dumps(parameters))
+
+    result = spells_classes_ded.spell_especifico(parameters['spell_especifico'])
+
+    logger.info("get_spell_especifico - retorno - " + result)
+
+    return __construir_retorno(return_var, result)
+
+
+def get_listagem_classe(return_var):
+    logger.info("get_listagem_classe - Parametros")
+
+    result = spells_classes_ded.lista_classe()
+
+    logger.info("get_listagem_classe - retorno - " + result)
+
+    return __construir_retorno(return_var, result)
+
+
+def get_listagem_spells_por_classe(parameters, return_var):
+    logger.info("get_listagem_spells_por_classe - Parametros - " + json.dumps(parameters))
+
+    result = spells_classes_ded.lista_spell_por_classe(parameters['classe'])
+
+    logger.info("get_listagem_spells_por_classe - retorno - " + result)
+
+    return __construir_retorno(return_var, result)
+
+
+def __construir_retorno(return_var, result):
+    return {return_var: result}

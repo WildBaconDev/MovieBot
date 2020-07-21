@@ -63,7 +63,6 @@ def send_message(session_id, message):
         }
     )
     result = response.get_result()
-    logger.info(result)
     result = execute_action(session_id, result)
     logger.info('Recebido do assistant: ' + result['output']['generic'][0]['text'])
     return result['output']['generic'][0]['text']

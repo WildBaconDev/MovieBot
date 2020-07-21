@@ -5,7 +5,6 @@ import configparser
 import assistant
 import voice
 
-
 import logging
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -24,8 +23,6 @@ def start(update, context):
     context.bot.send_message(chat_id=update.effective_chat.id, text=response_text)
 
 def message(update, context):
-    message_received = update.message.text
-
     assistant.validate_session(update.effective_chat.id)
 
     response_text = assistant.send_message(SessionManager.getInstance().getSession(update.effective_chat.id), update.message.text)
@@ -38,6 +35,7 @@ def receive_voice(update, context):
     text = voice.convert_voice(audio_file)
     response_text = assistant.send_message(SessionManager.getInstance().getSession(update.effective_chat.id), text)
     context.bot.send_voice(chat_id=update.effective_chat.id, voice=voice.convert_text(response_text))
+
 
 start_handler = CommandHandler('start', start)
 dispatcher.add_handler(start_handler)
