@@ -1,11 +1,14 @@
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from session_manager import SessionManager
 from io import BytesIO
+import os
 import configparser
 import assistant
 import voice
 
 import logging
+
+PORT = int(os.environ.get('PORT', 5000))
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
@@ -14,7 +17,10 @@ logger = logging.getLogger('TelegramBot')
 config = configparser.ConfigParser()
 config.read('config.ini')
 
-updater = Updater(token=config['TELEGRAM']['BOT_TOKEN'], use_context=True)
+URL_HEROKU_TELEGRAM = config['BOT_TELEGRAM_HEROKU']['URL']
+TOKEN = config['TELEGRAM']['BOT_TOKEN']
+
+updater = Updater(token=TOKEN, use_context=True)
 dispatcher = updater.dispatcher
 
 def start(update, context):
@@ -46,4 +52,10 @@ dispatcher.add_handler(message_handler)
 voice_handler = MessageHandler(Filters.voice, receive_voice)
 dispatcher.add_handler(voice_handler)
 
-updater.start_polling()
+# updater.start_polling()
+
+updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=TOKEN)
+
+updater.bot.setWebhook(URL_HEROKU_TELEGRAM + TOKEN)
