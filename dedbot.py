@@ -2,7 +2,6 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from session_manager import SessionManager
 from io import BytesIO
 import os
-import configparser
 import assistant
 import voice
 
@@ -14,11 +13,8 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
                      level=logging.INFO)
 logger = logging.getLogger('TelegramBot')
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-URL_HEROKU_TELEGRAM = config['BOT_TELEGRAM_HEROKU']['URL']
-TOKEN = config['TELEGRAM']['BOT_TOKEN']
+URL_HEROKU_TELEGRAM = os.environ.get('BOT_TELEGRAM_HEROKU_URL')
+TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN')
 
 updater = Updater(token=TOKEN, use_context=True)
 dispatcher = updater.dispatcher

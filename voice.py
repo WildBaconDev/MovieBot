@@ -1,28 +1,26 @@
+import os
+
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import TextToSpeechV1, SpeechToTextV1
 from io import BytesIO
-import configparser
 import logging
-
-config = configparser.ConfigParser()
-config.read('config.ini')
 
 logger = logging.getLogger('TelegramBot')
 
-t2sauth = IAMAuthenticator(config['WATSON_T2S']['IAM_TOKEN'])
-s2tauth = IAMAuthenticator(config['WATSON_S2T']['IAM_TOKEN'])
+t2sauth = IAMAuthenticator(os.environ.get('WATSON_T2S_IAM_TOKEN'))
+s2tauth = IAMAuthenticator(os.environ.get('WATSON_S2T_IAM_TOKEN'))
 
 text2speech = TextToSpeechV1(
     authenticator=t2sauth
 )
 
-text2speech.set_service_url(config['WATSON_T2S']['URL'])
+text2speech.set_service_url(os.environ.get('WATSON_T2S_URL'))
 
 speech2text = SpeechToTextV1(
     authenticator=s2tauth
 )
 
-speech2text.set_service_url(config['WATSON_S2T']['URL'])
+speech2text.set_service_url(os.environ.get('WATSON_S2T_URL'))
 
 def convert_voice(audio_file):
     response = speech2text.recognize(

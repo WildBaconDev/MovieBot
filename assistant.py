@@ -1,24 +1,21 @@
 from ibm_watson import AssistantV2
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from session_manager import SessionManager
-import configparser
 import logging
 import actions
-
-config = configparser.ConfigParser()
-config.read('config.ini')
+import os
 
 logger = logging.getLogger('TelegramBot')
 
-authenticator = IAMAuthenticator(config['WATSON_ASSISTANT']['IAM_TOKEN'])
-assistant_id = config['WATSON_ASSISTANT']['ASSISTANT_ID']
+authenticator = IAMAuthenticator(os.environ.get('WATSON_ASSISTANT_IAM_TOKEN'))
+assistant_id = os.environ.get('WATSON_ASSISTANT_ASSISTANT_ID')
 
 assistant = AssistantV2(
     version='2020-02-05',
     authenticator=authenticator
 )
 
-assistant.set_service_url(config['WATSON_ASSISTANT']['URL'])
+assistant.set_service_url(os.environ.get('WATSON_ASSISTANT_URL'))
 
 def create_session():
     response = assistant.create_session(assistant_id)

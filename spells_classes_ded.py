@@ -1,14 +1,10 @@
 import requests
-import configparser
 import logging
+import os
 
 logger = logging.getLogger("SpellClassesREST")
 
-config = configparser.ConfigParser()
-config.read('config.ini')
-
-base_url = config['API_SPELLS_CLASSES']['URL']
-
+base_url = os.environ.get('API_SPELLS_CLASSES_URL')
 
 def lista_spell():
     return __get(base_url + 'listaSpell/')
