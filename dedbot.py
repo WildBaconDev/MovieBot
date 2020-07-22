@@ -59,3 +59,5 @@ updater.start_webhook(listen="0.0.0.0",
                           url_path=TOKEN)
 
 updater.bot.setWebhook(URL_HEROKU_TELEGRAM + TOKEN)
+
+updater.idle()
