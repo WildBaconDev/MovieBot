@@ -2,4 +2,4 @@
 
 O Bot está no Heroku. 
 
-Bot @iesb_chatbot_dd_spells_bot, telegram.
+Telegram Bot @iesb_chatbot_dd_spells_bot.
